@@ -1,3 +1,81 @@
 {
-    "postCreateCommand": "bash clone-repos.sh"
+	"name": "R Data Science Environment",
+	"build": { "dockerfile": "Dockerfile" },
+
+	// Install Dev Container Features. More info: https://containers.dev/features
+	"features": {
+		"ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": {
+			"installTinyTex": true,
+			"installChromium": true
+		},
+		// Install JupyterLab and IRkernel.
+		// More info: https://github.com/rocker-org/devcontainer-templates/tree/main/src/r-ver
+		"ghcr.io/rocker-org/devcontainer-features/r-rig:1": {
+			"version": "none",
+			"installJupyterlab": true
+		},
+		"ghcr.io/rocker-org/devcontainer-features/pandoc:1": {},
+		"ghcr.io/rocker-org/devcontainer-features/renv-cache": {},
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {
+			"version": "latest",
+			"enableNonRootDocker": "true",
+			"moby": "false"
+		},
+		"ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
+            "packages": "libudunits2-dev,libxtst6,libxt6,libmagick++-dev"
+        }
+	},
+
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				// Add Jupyter and Python vscode extensions
+				"ms-toolsai.jupyter",
+				"ms-toolsai.jupyter-renderers",
+				"ms-python.python",
+				"ms-python.vscode-pylance",
+				"ionutvmi.path-autocomplete",
+				"hoovercj.vscode-power-mode",
+				"REditorSupport.r",
+				"hediet.vscode-drawio",
+				"redhat.vscode-yaml",
+				"codezombiech.gitignore",
+				"ms-azuretools.vscode-docker",
+				"tomoki1207.pdf",
+				"GrapeCity.gc-excelviewer",
+				"shahilkumar.docxreader"
+			],
+			"settings": {
+				"editor.wordWrap": "on",
+				"editor.tabSize": 2,
+				"path-autocomplete.pathMappings": {
+						"/": "/",
+						"./": "${folder}"
+				},
+				"editor.bracketPairColorization.enabled": true,
+				"editor.guides.bracketPairs": "active"
+			}
+		}
+	},
+
+	// Forward Jupyter and RStudio ports
+	"forwardPorts": [8787, 8889],
+	"portsAttributes": {
+		"8787": {
+			"label": "RStudio",
+			"requireLocalPort": true,
+			"onAutoForward": "ignore"
+		},
+		"8889": {
+			"label": "JupyterLab",
+			"requireLocalPort": true,
+			"onAutoForward": "ignore"
+		}
+	},
+
+	// Use 'postAttachCommand' to run commands after the container is started.
+	"postCreateCommand": "bash postCreateCommand.sh"
+
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root
+	// "remoteUser": "root"
 }

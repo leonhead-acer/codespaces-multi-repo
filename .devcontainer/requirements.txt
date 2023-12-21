@@ -1,0 +1,8 @@
+pybryt
+pylint
+datascience
+numpy
+pandas
+ipywidgets
+jupyter
+ipykernel
