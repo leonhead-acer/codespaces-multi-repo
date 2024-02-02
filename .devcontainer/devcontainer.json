@@ -1,31 +1,43 @@
 {
-	"name": "R Data Science Environment",
-	"build": { "dockerfile": "Dockerfile" },
-
+	"name": "R & Python Data Science Environment",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "app",
+	"workspaceFolder": "/workspace",
 	// Install Dev Container Features. More info: https://containers.dev/features
 	"features": {
+		"ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
+            "packages": "libudunits2-dev,libxtst6,libxt6,libmagick++-dev,python3.10-venv,openjdk-19-jdk,openjdk-19-jre,libpq-dev,python-dev-is-python3"
+        },
+		"ghcr.io/rocker-org/devcontainer-features/r-rig": {
+			"installREnv": true,
+			"installVscDebugger": true,
+			"installRMarkdown": true,
+			"installJupyterlab": true,
+			"installRadian": true,
+			"installDevTools": true
+		},
+		"ghcr.io/rocker-org/devcontainer-features/rstudio-server": {
+			"singleUser": true
+		},
+		"ghcr.io/rocker-org/devcontainer-features/r-packages": {
+			"packages": "remotes,pkgdown,png,reticulate,languageserver",
+			"installSystemRequirements": true
+		},
 		"ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": {
 			"installTinyTex": true,
 			"installChromium": true
 		},
-		// Install JupyterLab and IRkernel.
-		// More info: https://github.com/rocker-org/devcontainer-templates/tree/main/src/r-ver
-		"ghcr.io/rocker-org/devcontainer-features/r-rig:1": {
-			"version": "none",
-			"installJupyterlab": true
-		},
-		"ghcr.io/rocker-org/devcontainer-features/pandoc:1": {},
 		"ghcr.io/rocker-org/devcontainer-features/renv-cache": {},
 		"ghcr.io/devcontainers/features/docker-in-docker:2": {
 			"version": "latest",
 			"enableNonRootDocker": "true",
 			"moby": "false"
 		},
-		"ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
-            "packages": "libudunits2-dev,libxtst6,libxt6,libmagick++-dev"
-        }
+		"ghcr.io/devcontainers/features/aws-cli": {},
+		"ghcr.io/devcontainers/features/github-cli": {},
+		"ghcr.io/devcontainers/features/node": {}
 	},
-
+	
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -53,29 +65,54 @@
 						"./": "${folder}"
 				},
 				"editor.bracketPairColorization.enabled": true,
-				"editor.guides.bracketPairs": "active"
+				"editor.guides.bracketPairs": "active",
+				"r.rterm.linux": "/usr/local/bin/radian",
+				"r.bracketedPaste": true,
+				"r.plot.useHttpgd": true,
+				"[r]": {
+					"editor.wordSeparators": "`~!@#%$^&*()-=+[{]}\\|;:'\",<>/?"
+				}
 			}
 		}
 	},
 
 	// Forward Jupyter and RStudio ports
-	"forwardPorts": [8787, 8889],
+	"forwardPorts": [8787, 8889, 5432, 4040],
 	"portsAttributes": {
 		"8787": {
-			"label": "RStudio",
+			"label": "RStudio IDE",
 			"requireLocalPort": true,
-			"onAutoForward": "ignore"
+			"onAutoForward": "openBrowser"
 		},
 		"8889": {
 			"label": "JupyterLab",
+			"requireLocalPort": true,
+			"onAutoForward": "openBrowser"
+		},
+		"5432": {
+			"label": "PostgreSQL",
+			"requireLocalPort": true,
+			"onAutoForward": "ignore"
+		},
+		"4040": {
+			"label": "PySpark",
 			"requireLocalPort": true,
 			"onAutoForward": "ignore"
 		}
 	},
 
 	// Use 'postAttachCommand' to run commands after the container is started.
-	"postCreateCommand": "bash postCreateCommand.sh"
-
+	"postAttachCommand": {
+		"rstudio" : "rstudio-server start",
+		"jupyter": [
+			"jupyter","notebook",
+			"--NotebookApp.token=''",
+			"--NotebookApp.password=''",
+			"--allow-root",
+			"--port=8889"
+		],
+		"postAttach": "bash ./tmp/postAttachCommand.sh"
+	}
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root
 	// "remoteUser": "root"
 }

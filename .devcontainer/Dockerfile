@@ -1,20 +1,10 @@
-# Pre-built Dev Container Image for R. More info: https://github.com/rocker-org/devcontainer-images/pkgs/container/devcontainer%2Ftidyverse
-# Available R version: 4, 4.1, 4.0
-ARG VARIANT="4.3"
-FROM ghcr.io/rocker-org/devcontainer/tidyverse:${VARIANT}
+ARG VARIANT=4.3
 
-COPY init_userconf.sh /tmp/
-RUN chmod u+x /tmp/init_userconf.sh
+FROM ghcr.io/rocker-org/devcontainer/r-ver:${VARIANT}
 
-RUN install2.r --error --skipinstalled -n -1 \
-        remotes \
-        pkgdown \
-        devtools \
-        png \
-        reticulate \
-    && rm -rf /tmp/downloaded_packages
-    # && R -q -e 'remotes::install_github("https://github.com/dcomtois/summarytools/tree/0-8-9")'
+COPY ./postAttachCommand.sh /tmp
 
 # Install Python packages
 COPY requirements.txt /tmp/pip-tmp/
-RUN python3 -m pip --disable-pip-version-check --no-cache-dir install -r /tmp/pip-tmp/requirements.txt
+RUN pip3 --disable-pip-version-check --no-cache-dir install -r /tmp/pip-tmp/requirements.txt \
+    && rm -rf /tmp/pip-tmp
