@@ -6,8 +6,9 @@
 	// Install Dev Container Features. More info: https://containers.dev/features
 	"features": {
 		"ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
-            "packages": "libudunits2-dev,libxtst6,libxt6,libmagick++-dev,python3.10-venv,openjdk-19-jdk,openjdk-19-jre,libpq-dev,python-dev-is-python3"
+            "packages": "libudunits2-dev,libxtst6,libxt6,libmagick++-dev,python3.10-venv,libpq-dev,python-dev-is-python3, libglpk-dev"
         },
+		"ghcr.io/devcontainers/features/java": {},
 		"ghcr.io/rocker-org/devcontainer-features/r-rig": {
 			"installREnv": true,
 			"installVscDebugger": true,
