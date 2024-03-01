@@ -7,10 +7,10 @@ services:
       dockerfile: Dockerfile
 
     volumes:
-      - git-repos:/workspace:cached
+      - git-repos:/home/rstudio/workspaces:cached
       
     # Overrides default command so things don't shut down after the process ends.
-    command: sleep infinity
+    # command: sleep infinity
 
     # Specify non-root users
     user: rstudio
@@ -35,10 +35,24 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_DB: postgres
 
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    restart: unless-stopped
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    ports:
+      - "80:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: pgadmin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+
     # Add "forwardPorts": ["5432"] to **devcontainer.json** to forward PostgreSQL locally.
     # (Adding the "ports" property to this file will not forward from a Codespace.)
 
 volumes:
   postgres-data:
   git-repos:
+  pgadmin-data:
 

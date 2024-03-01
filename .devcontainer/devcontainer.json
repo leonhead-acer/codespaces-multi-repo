@@ -2,7 +2,7 @@
 	"name": "R & Python Data Science Environment",
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "app",
-	"workspaceFolder": "/workspace",
+	"workspaceFolder": "/home/rstudio/workspaces",
 	// Install Dev Container Features. More info: https://containers.dev/features
 	"features": {
 		"ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
@@ -78,7 +78,7 @@
 	},
 
 	// Forward Jupyter and RStudio ports
-	"forwardPorts": [8787, 8889, 5432, 4040],
+	"forwardPorts": [8787, 8889, 5432, 4040,80],
 	"portsAttributes": {
 		"8787": {
 			"label": "RStudio IDE",
@@ -99,8 +99,15 @@
 			"label": "PySpark",
 			"requireLocalPort": true,
 			"onAutoForward": "ignore"
+		},
+		"80": {
+			"label": "pgAdmin",
+			"requireLocalPort": true,
+			"onAutoForward": "ignore"
 		}
 	},
+
+	"overrideCommand": false,
 
 	// Use 'postAttachCommand' to run commands after the container is started.
 	"postAttachCommand": {
@@ -111,8 +118,7 @@
 			"--NotebookApp.password=''",
 			"--allow-root",
 			"--port=8889"
-		],
-		"postAttach": "bash ./tmp/postAttachCommand.sh"
+		]
 	}
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root
 	// "remoteUser": "root"
