@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 
 script_folder="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)"
+git config --global credential.UseHttpPath true
 
 clone-repo()
 {
     cd "${workspaces_folder}"
     if [ ! -d "${1#*/}" ]; then
-        git clone "https://github.com/$1"
+        git clone "$1"
     else 
         echo "Already cloned $1"
     fi
@@ -27,7 +28,6 @@ fi
 
 if [ -z "${AWS_ACCESS_KEY_ID}" ]; then
     git config --global credential.helper '!aws codecommit credential-helper $@'
-    git config --global credential.UseHttpPath true
 fi
 
 if [ -f ./repos-to-clone.list ]; then
